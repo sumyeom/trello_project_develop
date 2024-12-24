@@ -1,6 +1,7 @@
 package com.example.trelloproject.board.entity;
 
 import com.example.trelloproject.list.entity.BoardList;
+import com.example.trelloproject.workspace.entity.Workspace;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,9 +32,9 @@ public class Board {
     @Column(nullable = false)
     private File image;
 
-//    @ManyToOne
-//    @JoinColumn(name = "workspace_id", nullable = false)
-//    private Workspace workspace;
+    @ManyToOne
+    @JoinColumn(name = "workspace_id", nullable = false)
+    private Workspace workspace;
 
     @OneToMany(mappedBy = "board")
     private List<BoardList> boardLists = new ArrayList<>();

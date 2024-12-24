@@ -34,9 +34,6 @@ public class BoardList {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
-//    @OneToMany
-//    private List<Card> cards = new ArrayList<>();
-
     public BoardList() {}
 
     public BoardList(String title, Integer order, Board board) {
