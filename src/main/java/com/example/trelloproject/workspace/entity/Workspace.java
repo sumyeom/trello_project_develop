@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
-@Table(name= "wordkspace")
+@Table(name= "workspace")
 public class Workspace {
     @Id
     @Column(name = "workspace_id")
