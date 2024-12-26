@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
+@Table(name = "add_file")
 public class AddFile {
 
     @Id
@@ -25,4 +26,10 @@ public class AddFile {
 
     @Column(nullable = false)
     private String uploader;
+
+    @ManyToOne
+    @JoinColumn(name = "card_id")
+    private Card card;
+
+    public AddFile(){}
 }
