@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BoardServiceImpl implements BoardService {
@@ -29,4 +31,11 @@ public class BoardServiceImpl implements BoardService {
         return BoardCreateResponseDto.toDto(savedBoard);
     }
 
+    @Override
+    public List<BoardCreateResponseDto> findAllBoard(Long workspaceId) {
+
+        List<Board> boardList = boardRepository.findAll();
+
+        return boardList.stream().map(BoardCreateResponseDto::toDto).toList();
+    }
 }
