@@ -1,12 +1,13 @@
 package com.example.trelloproject.workspace.entity;
 
+import com.example.trelloproject.common.entity.CreateAndUpdateDateEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 
 @Entity
 @Getter
 @Table(name= "workspace")
-public class Workspace {
+public class Workspace extends CreateAndUpdateDateEntity {
     @Id
     @Column(name = "workspace_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
