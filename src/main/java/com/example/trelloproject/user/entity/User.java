@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 
-@Entity
 @Getter
+@Entity(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,19 +23,24 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, columnDefinition = "varchar(10) default 'NORMAL'")
+    @Column(nullable = false)
     private UserStatus userStatus;
 
     @Column(nullable = false)
     private UserRole userRole;
 
-    public User(String name, String email, String password, UserStatus userStatus,UserRole userRole) {
+    @ManyToOne
+    @JoinColumn(name = "user_workspace_id")
+    private UserWorkspace userWorkspace;
+
+    public User() {}
+
+    public User(String name, String email, String password, UserRole userRole) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.userStatus = userStatus;
         this.userRole = userRole;
+        this.userStatus = UserStatus.NORMAL;
     }
-
-    public User() {}
 }
+
