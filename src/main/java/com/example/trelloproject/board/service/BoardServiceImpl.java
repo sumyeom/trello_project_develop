@@ -2,6 +2,7 @@ package com.example.trelloproject.board.service;
 
 import com.example.trelloproject.board.dto.BoardCreateRequestDto;
 import com.example.trelloproject.board.dto.BoardCreateResponseDto;
+import com.example.trelloproject.board.dto.BoardFindResponseDto;
 import com.example.trelloproject.board.entity.Board;
 import com.example.trelloproject.board.repository.BoardRepository;
 import com.example.trelloproject.workspace.entity.Workspace;
@@ -23,7 +24,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardCreateResponseDto createBoard(Long workspaceId, BoardCreateRequestDto boardCreateRequestDto) {
 
-        Workspace foundWorkspace = workspaceRepository.findById(workspaceId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "해당하는 워크스페이스가 존재하지 않습니다."));
+        Workspace foundWorkspace = findByWorkspaceId(workspaceId);
 
         Board board = new Board(boardCreateRequestDto.getTitle(), boardCreateRequestDto.getImage(), foundWorkspace );
         Board savedBoard = boardRepository.save(board);
@@ -37,5 +38,21 @@ public class BoardServiceImpl implements BoardService {
         List<Board> boardList = boardRepository.findAll();
 
         return boardList.stream().map(BoardCreateResponseDto::toDto).toList();
+    }
+
+    @Override
+    public BoardFindResponseDto findBoardById(Long workspaceId, Long boardId) {
+
+        Workspace foundWorkspace = findByWorkspaceId(workspaceId);
+        Board foundBoard = boardRepository.findById(boardId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NO_CONTENT, "해당하는 보드가 존재하지 않습니다."));
+
+        return BoardFindResponseDto.toDto(foundBoard, foundWorkspace);
+    }
+
+    public Workspace findByWorkspaceId(Long id) {
+
+        return workspaceRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NO_CONTENT, "해당하는 워크스페이스가 존재하지 않습니다."));
     }
 }

@@ -2,6 +2,7 @@ package com.example.trelloproject.board.controller;
 
 import com.example.trelloproject.board.dto.BoardCreateRequestDto;
 import com.example.trelloproject.board.dto.BoardCreateResponseDto;
+import com.example.trelloproject.board.dto.BoardFindResponseDto;
 import com.example.trelloproject.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,15 @@ public class BoardController {
         List<BoardCreateResponseDto> foundBoards = boardService.findAllBoard(workspaceId);
 
         return new ResponseEntity<>(foundBoards, HttpStatus.OK);
+    }
+
+    // 보드 단건 조회
+    @GetMapping("/{boardId}")
+    public ResponseEntity<BoardFindResponseDto> findBoardById(@PathVariable Long workspaceId, @PathVariable Long boardId) {
+
+        BoardFindResponseDto foundBoard = boardService.findBoardById(workspaceId, boardId);
+
+        return new ResponseEntity<>(foundBoard, HttpStatus.OK);
     }
 
 }
