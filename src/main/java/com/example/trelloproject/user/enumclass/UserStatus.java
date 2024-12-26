@@ -9,7 +9,7 @@ import java.util.List;
 public enum UserStatus {
     NORMAL("NORMAL"), DELETED("DELETED");
 
-    private String name;
+    private final String name;
 
     UserStatus(String name) {
         this.name = name;
