@@ -1,5 +1,6 @@
 package com.example.trelloproject.board.entity;
 
+import com.example.trelloproject.board.dto.BoardCreateRequestDto;
 import com.example.trelloproject.common.entity.CreateAndUpdateDateEntity;
 import com.example.trelloproject.list.entity.BoardList;
 import com.example.trelloproject.workspace.entity.Workspace;
@@ -47,5 +48,10 @@ public class Board extends CreateAndUpdateDateEntity {
         this.title = title;
         this.image = image;
         this.workspace = workspace;
+    }
+
+    public void updateBoard(BoardCreateRequestDto boardCreateRequestDto) {
+        this.title = boardCreateRequestDto.getTitle();
+        this.image = boardCreateRequestDto.getImage();
     }
 }
