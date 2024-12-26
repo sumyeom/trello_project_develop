@@ -1,5 +1,6 @@
 package com.example.trelloproject.board.entity;
 
+import com.example.trelloproject.common.entity.CreateAndUpdateDateEntity;
 import com.example.trelloproject.list.entity.BoardList;
 import com.example.trelloproject.workspace.entity.Workspace;
 import jakarta.persistence.Column;
@@ -20,7 +21,7 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "board")
-public class Board {
+public class Board extends CreateAndUpdateDateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +30,8 @@ public class Board {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
+    @Column
     private File image;
 
     @ManyToOne
