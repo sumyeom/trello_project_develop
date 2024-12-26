@@ -1,5 +1,6 @@
 package com.example.trelloproject.user.service;
 
+import com.example.trelloproject.user.config.auth.UserDetailsImpl;
 import com.example.trelloproject.user.dto.UserLoginRequestDto;
 import com.example.trelloproject.user.dto.UserLoginResponseDto;
 import com.example.trelloproject.user.dto.UserSignUpRequestDto;
@@ -60,6 +61,15 @@ public class UserServiceImpl implements UserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return new UserLoginResponseDto(user.getName(), user.getEmail());
+    }
+
+    //세션에서 로그인한 사용자의 정보 가져오기
+    public User getSessionUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User user = userDetails.getUser();
+
+        return user;
     }
 
     private void validatePassword(String rawPassword, String encodedPassword) throws IllegalArgumentException {
