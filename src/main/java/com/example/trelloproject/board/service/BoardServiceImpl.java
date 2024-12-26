@@ -50,9 +50,25 @@ public class BoardServiceImpl implements BoardService {
         return BoardFindResponseDto.toDto(foundBoard, foundWorkspace);
     }
 
+    @Override
+    public BoardCreateResponseDto updateBoard(Long workspaceId, Long boardId, BoardCreateRequestDto boardCreateRequestDto) {
+
+        Board foundBoard = findByBoardId(boardId);
+        foundBoard.updateBoard(boardCreateRequestDto);
+        Board savedBoard = boardRepository.save(foundBoard);
+
+        return BoardCreateResponseDto.toDto(savedBoard);
+    }
+
     public Workspace findByWorkspaceId(Long id) {
 
         return workspaceRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NO_CONTENT, "해당하는 워크스페이스가 존재하지 않습니다."));
+    }
+
+    public Board findByBoardId(Long id) {
+
+        return boardRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NO_CONTENT, "해당하는 보드가 존재하지 않습니다."));
     }
 }

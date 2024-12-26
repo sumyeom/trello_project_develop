@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +49,15 @@ public class BoardController {
         BoardFindResponseDto foundBoard = boardService.findBoardById(workspaceId, boardId);
 
         return new ResponseEntity<>(foundBoard, HttpStatus.OK);
+    }
+
+    // 보드 수정
+    @PatchMapping("/{boardId}")
+    public ResponseEntity<BoardCreateResponseDto> updateBoard(@PathVariable Long workspaceId, @PathVariable Long boardId, @RequestBody BoardCreateRequestDto boardCreateRequestDto) {
+
+        BoardCreateResponseDto updatedBoard = boardService.updateBoard(workspaceId, boardId, boardCreateRequestDto);
+
+        return new ResponseEntity<>(updatedBoard, HttpStatus.OK);
     }
 
 }

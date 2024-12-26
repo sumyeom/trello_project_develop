@@ -13,4 +13,6 @@ public interface BoardService {
     List<BoardCreateResponseDto> findAllBoard(Long workspaceId);
 
     BoardFindResponseDto findBoardById(Long workspaceId, Long boardId);
+
+    BoardCreateResponseDto updateBoard(Long workspaceId, Long boardId, BoardCreateRequestDto boardCreateRequestDto);
 }
