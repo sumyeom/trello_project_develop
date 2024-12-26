@@ -43,8 +43,9 @@ public class Board extends CreateAndUpdateDateEntity {
 
     public Board() {}
 
-    public Board(String title, File image) {
+    public Board(String title, File image, Workspace workspace) {
         this.title = title;
         this.image = image;
+        this.workspace = workspace;
     }
 }
