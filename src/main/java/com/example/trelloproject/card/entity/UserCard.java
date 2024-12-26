@@ -18,4 +18,8 @@ public class UserCard {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "card_id")
+    private Card card;
 }
