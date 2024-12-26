@@ -5,7 +5,6 @@ import com.example.trelloproject.user.enumclass.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
-import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @Entity(name = "user")
