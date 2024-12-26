@@ -30,7 +30,8 @@ public class Board extends CreateAndUpdateDateEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
+    @Column
     private File image;
 
     @ManyToOne
