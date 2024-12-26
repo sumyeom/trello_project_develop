@@ -27,4 +27,9 @@ public class Workspace extends CreateAndUpdateDateEntity {
     public Workspace() {
 
     }
+
+    public void updateWorkspace(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
 }

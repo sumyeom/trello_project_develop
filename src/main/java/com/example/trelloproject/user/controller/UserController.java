@@ -5,8 +5,6 @@ import com.example.trelloproject.user.dto.UserLoginResponseDto;
 import com.example.trelloproject.user.dto.UserSignUpRequestDto;
 import com.example.trelloproject.user.dto.UserSignUpResponseDto;
 import com.example.trelloproject.user.service.UserServiceImpl;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,10 +28,8 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto userLoginRequestDto, HttpServletRequest request) {
+    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
         UserLoginResponseDto userLoginResponseDto = userServiceImpl.loginUser(userLoginRequestDto);
-        HttpSession session = request.getSession();
-        session.setAttribute("user", userLoginResponseDto);
         return new ResponseEntity<>(userLoginResponseDto, HttpStatus.OK);
     }
 }
