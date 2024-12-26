@@ -6,7 +6,6 @@ import com.example.trelloproject.user.dto.UserSignUpRequestDto;
 import com.example.trelloproject.user.dto.UserSignUpResponseDto;
 import com.example.trelloproject.user.service.UserServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
