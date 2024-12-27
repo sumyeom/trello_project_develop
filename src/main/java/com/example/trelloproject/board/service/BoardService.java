@@ -15,4 +15,6 @@ public interface BoardService {
     BoardFindResponseDto findBoardById(Long workspaceId, Long boardId);
 
     BoardCreateResponseDto updateBoard(Long workspaceId, Long boardId, BoardCreateRequestDto boardCreateRequestDto);
+
+    void deleteBoard(Long workspaceId, Long boardId);
 }

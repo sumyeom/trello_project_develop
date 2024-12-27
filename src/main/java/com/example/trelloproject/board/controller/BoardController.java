@@ -7,6 +7,7 @@ import com.example.trelloproject.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,6 +59,15 @@ public class BoardController {
         BoardCreateResponseDto updatedBoard = boardService.updateBoard(workspaceId, boardId, boardCreateRequestDto);
 
         return new ResponseEntity<>(updatedBoard, HttpStatus.OK);
+    }
+
+    // 보드 삭제
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<String> deleteBoard(@PathVariable Long workspaceId, @PathVariable Long boardId) {
+
+        boardService.deleteBoard(workspaceId, boardId);
+
+        return new ResponseEntity<>("정상적으로 삭제되었습니다.", HttpStatus.OK);
     }
 
 }
