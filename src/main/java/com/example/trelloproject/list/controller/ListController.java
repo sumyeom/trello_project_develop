@@ -35,9 +35,9 @@ public class ListController {
     @PatchMapping("/{listId}")
     public ResponseEntity<ListCreateResponseDto> updateList(@PathVariable Long workspaceId, @PathVariable Long boardId, @PathVariable Long listId, @RequestBody ListUpdateRequestDto listUpdateRequestDto) {
 
-        listService.updateList(workspaceId, boardId, listId, listUpdateRequestDto);
+        ListCreateResponseDto updatedList = listService.updateList(workspaceId, boardId, listId, listUpdateRequestDto);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(updatedList, HttpStatus.OK);
     }
 
 }
