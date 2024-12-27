@@ -32,7 +32,7 @@ public class User {
     @Column(nullable = false)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "users")
     private List<UserWorkspace> userWorkspace = new ArrayList<>();
 
     public User() {}
