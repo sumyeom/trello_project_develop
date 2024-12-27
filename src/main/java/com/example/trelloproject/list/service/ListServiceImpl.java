@@ -66,6 +66,7 @@ public class ListServiceImpl implements ListService{
         // 제목과 기존포지션->바뀔포지션 변경
         foundBoardList.updatePosition(listUpdateRequestDto.getTitle(), listUpdateRequestDto.getPosition());
 
+        listRepository.save(foundBoardList);
         return ListCreateResponseDto.toDto(foundBoardList);
     }
 }
