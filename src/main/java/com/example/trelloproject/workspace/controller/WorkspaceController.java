@@ -84,4 +84,24 @@ public class WorkspaceController {
         WorkspaceInviteResponseDto responseDto = workspaceService.inviteWorkspace(authentication,workspaceId, requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
+
+    /**
+     * 워크스페이스 초대 응답 API
+     * @param workspaceId
+     * @param id
+     * @param requestDto
+     * @param authentication
+     * @return
+     */
+    @PatchMapping("/{workspaceId}/invitation/{id}")
+    public ResponseEntity<WorkspaceInviteResponseDto> inviteAcceptWorkspace(
+            @PathVariable Long workspaceId,
+            @PathVariable Long id,
+            @RequestBody WorkspaceInviteAcceptRequestDto requestDto,
+            Authentication authentication
+    ){
+        WorkspaceInviteResponseDto responseDto = workspaceService.inviteAcceptWorkspace(workspaceId, id, authentication, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
 }

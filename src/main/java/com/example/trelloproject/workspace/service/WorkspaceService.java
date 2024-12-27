@@ -15,4 +15,6 @@ public interface WorkspaceService {
     void deleteWorkspace(Long id);
 
     WorkspaceInviteResponseDto inviteWorkspace(Authentication authentication, Long workspaceId, WorkspaceInviteRequestDto requestDto);
+
+    WorkspaceInviteResponseDto inviteAcceptWorkspace(Long workspaceId, Long id, Authentication authentication, WorkspaceInviteAcceptRequestDto requestDto);
 }

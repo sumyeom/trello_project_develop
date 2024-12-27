@@ -36,4 +36,8 @@ public class UserWorkspace {
         this.user = user;
         this.workspace = workspace;
     }
+
+    public void updateStatus(String status){
+        this.invitationStatus = status;
+    }
 }
