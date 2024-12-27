@@ -32,9 +32,6 @@ public class User {
     @Column(nullable = false)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "users")
-    private List<UserWorkspace> userWorkspace = new ArrayList<>();
-
     public User() {}
 
     public User(String name, String email, String password, UserRole userRole) {
