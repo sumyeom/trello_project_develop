@@ -1,5 +1,7 @@
 package com.example.trelloproject.board.service;
 
+import com.example.trelloproject.S3.Image;
+import com.example.trelloproject.S3.S3Service;
 import com.example.trelloproject.board.dto.BoardCreateRequestDto;
 import com.example.trelloproject.board.dto.BoardCreateResponseDto;
 import com.example.trelloproject.board.dto.BoardFindResponseDto;
@@ -10,6 +12,7 @@ import com.example.trelloproject.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -20,13 +23,29 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
     private final WorkspaceRepository workspaceRepository;
+    private final S3Service s3Service;
 
     @Override
     public BoardCreateResponseDto createBoard(Long workspaceId, BoardCreateRequestDto boardCreateRequestDto) {
 
         Workspace foundWorkspace = findByWorkspaceId(workspaceId);
 
-        Board board = new Board(boardCreateRequestDto.getTitle(), boardCreateRequestDto.getImage(), foundWorkspace );
+        Board board = new Board(boardCreateRequestDto.getTitle(), foundWorkspace);
+
+        // 이미지 처리
+        MultipartFile image = boardCreateRequestDto.getImage();
+        if (image != null) {
+            try {
+                String filePath = s3Service.upload(image);
+                String fileName = image.getOriginalFilename();
+
+                Image imageEntity = Image.of(filePath, fileName);
+                board.addImage(imageEntity);
+            } catch (Exception e) {
+                throw new RuntimeException("이미지 업로드 중 오류 발생: " + e.getMessage(), e);
+            }
+        }
+
         Board savedBoard = boardRepository.save(board);
 
         return BoardCreateResponseDto.toDto(savedBoard);

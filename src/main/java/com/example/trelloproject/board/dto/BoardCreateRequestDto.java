@@ -1,16 +1,15 @@
 package com.example.trelloproject.board.dto;
 
 import lombok.Getter;
-
-import java.io.File;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 public class BoardCreateRequestDto {
 
     private final String title;
-    private final File image;
+    private final MultipartFile image;
 
-    public BoardCreateRequestDto(String title, File image) {
+    public BoardCreateRequestDto(String title, MultipartFile image) {
         this.title = title;
         this.image = image;
     }
