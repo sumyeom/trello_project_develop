@@ -1,7 +1,9 @@
 package com.example.trelloproject.user.config;
 
+import com.example.trelloproject.user.config.filter.JwtAuthFilter;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,40 +12,44 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebConfig {
 
-//    private final AuthenticationProvider authenticationProvider;
-//    private final AuthenticationEntryPoint authenticationEntryPoint;
-//    private final AccessDeniedHandler accessDeniedHandler;
+    private final JwtAuthFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
 
-    private static final String[] WHITE_LIST = {"/users/signup", "/users/login"};
+    private static final String[] WHITE_LIST = {"/users/signup", "/users/login","/users/auth-test"};
 
+    // security 필터
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(WHITE_LIST).permitAll()
-                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                                .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE, DispatcherType.ERROR).permitAll()
-//                                .requestMatchers("/admin/**").hasRole("ADMIN")
-//                                .requestMatchers("/user/**").hasRole("USER")
-//                                .requestMatchers("/member/**").hasRole("MEMBER")
-//                                .requestMatchers("/workspace/**").hasRole("WORKSPACEADMIN")
-//                                .requestMatchers("/workspaceread/**").hasRole("ONLYREAD")
-                                .anyRequest().authenticated()
-                );
-//                .exceptionHandling(handler -> handler
-//                        .authenticationEntryPoint(authenticationEntryPoint)
-//                        .accessDeniedHandler(accessDeniedHandler));
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(auth ->
+                    auth.requestMatchers(WHITE_LIST).permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE, DispatcherType.ERROR).permitAll()
+                        .anyRequest().authenticated())
+            .exceptionHandling(handler -> handler
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(accessDeniedHandler))
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -52,8 +58,15 @@ public class WebConfig {
     public RoleHierarchy roleHierarchy() {
         return RoleHierarchyImpl.fromHierarchy(
                 """
-                   WORKSPACEADMIN > MEMBER > ONLYREAD
-                   ADMIN > USER
+                   ROLE_WSADMIN > ROLE_MEMBER > ROLE_ONLYREAD
+                   ROLE_ADMIN > ROLE_USER
                    """);
+    }
+
+    // h2 콘솔 접속 시 security를 거치지 않도록 설정
+    @Bean
+    @ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
+    public WebSecurityCustomizer configureH2ConsoleEnable() {
+        return web -> web.ignoring().requestMatchers(PathRequest.toH2Console());
     }
 }
