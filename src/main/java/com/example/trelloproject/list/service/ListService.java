@@ -9,4 +9,6 @@ public interface ListService {
    ListCreateResponseDto creatList(Long workspaceId, Long boardId, ListCreateRequestDto listCreateRequestDto);
 
    ListCreateResponseDto updateList(Long workspaceId, Long boardId, Long listId, ListUpdateRequestDto listUpdateRequestDto);
+
+   void deleteList(Long workspaceId, Long boardId, Long listId);
 }
