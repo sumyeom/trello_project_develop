@@ -3,7 +3,6 @@ package com.example.trelloproject.card.entity;
 import com.example.trelloproject.list.entity.BoardList;
 import jakarta.persistence.*;
 import lombok.Getter;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,16 +33,19 @@ public class Card {
     private List<AddFile> fileList = new ArrayList<>();
 
     @OneToMany(mappedBy = "card")
-    private List<UserCard> memberList = new ArrayList<>();
+    private List<UserCard> managers = new ArrayList<>();
+
+//    @OneToMany(mappedBy = "card", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+//    private List<Comment> comments;
 
     public Card(){}
 
-    public Card(String title, String description, LocalDateTime endAt, List<AddFile> fileList, List<UserCard> memberList) {
+    public Card(String title, String description, LocalDateTime endAt, List<AddFile> fileList, List<UserCard> managers) {
         this.title = title;
         this.description = description;
         this.endAt = endAt;
         this.fileList = fileList;
-        this.memberList = memberList;
+        this.managers = managers;
     }
 
     public void setTitle(String title) {
@@ -58,7 +60,7 @@ public class Card {
     public void setFileList(List<AddFile> fileList){
         this.fileList = fileList;
     }
-    public void setMemberList(List<UserCard> memberList) {
-        this.memberList = memberList;
+    public void setManagerList(List<UserCard> managers) {
+        this.managers = managers;
     }
 }

@@ -6,14 +6,14 @@ import lombok.Getter;
 
 @Entity
 @Getter
-@Table(name="member")
+@Table(name="manager")
 public class UserCard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String memberName;
+    private String managerName;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

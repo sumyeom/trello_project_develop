@@ -14,14 +14,14 @@ public class CardCreateRequestDto {
     private String description;
     private LocalDateTime endAt;
     private List<AddFile> fileList;
-    private List<UserCard> memberList;
+    private List<UserCard> managers;
 
 
-    public CardCreateRequestDto(String title, String description, LocalDateTime endAt, List<AddFile> fileList, List<UserCard> memberList) {
+    public CardCreateRequestDto(String title, String description, LocalDateTime endAt, List<AddFile> fileList, List<UserCard> managers) {
         this.description = description;
         this.title = title;
         this.endAt = endAt;
         this.fileList = fileList;
-        this.memberList = memberList;
+        this.managers = managers;
     }
 }
