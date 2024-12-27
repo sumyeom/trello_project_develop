@@ -46,4 +46,17 @@ public class BoardList extends CreateAndUpdateDateEntity {
         this.position = position;
         this.board = board;
     }
+
+    public void updatePosition(String title, Integer position) {
+        this.title = title;
+        this.position = position;
+    }
+
+    public void downPosition() {
+        this.position--;
+    }
+
+    public void upPosition() {
+        this.position++;
+    }
 }
