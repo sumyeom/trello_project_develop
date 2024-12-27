@@ -60,6 +60,13 @@ public class BoardServiceImpl implements BoardService {
         return BoardCreateResponseDto.toDto(savedBoard);
     }
 
+    @Override
+    public void deleteBoard(Long workspaceId, Long boardId) {
+
+        Board foundBoard = findByBoardId(boardId);
+        boardRepository.delete(foundBoard);
+    }
+
     public Workspace findByWorkspaceId(Long id) {
 
         return workspaceRepository.findById(id).orElseThrow(
