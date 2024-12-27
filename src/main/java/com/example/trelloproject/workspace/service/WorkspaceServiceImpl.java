@@ -133,5 +133,44 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         );
     }
 
+    /**
+     * 워크스페이스 초대 응답
+     * @param workspaceId
+     * @param id
+     * @param authentication
+     * @param requestDto
+     * @return
+     */
+    @Transactional
+    @Override
+    public WorkspaceInviteResponseDto inviteAcceptWorkspace(Long workspaceId, Long id, Authentication authentication, WorkspaceInviteAcceptRequestDto requestDto) {
+        // Workspace 조회
+        Workspace findWorkspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"해당 워크스페이스가 없습니다."));
+        // UserWorkspace 조회
+        UserWorkspace findUserWorkspace = userWorkspaceRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"초대된 워크스페이스가 없습니다."));
+        // 유저 조회
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User findUser = userDetails.getUser();
+
+        // userWorkspace에 있는 유저와 로그인한 유저가 다를 경우
+        if(!findUser.getId().equals(findUserWorkspace.getUser().getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        findUserWorkspace.updateStatus(requestDto.getStatus());
+        UserWorkspace newUserWorkspace = userWorkspaceRepository.save(findUserWorkspace);
+
+        return new WorkspaceInviteResponseDto(
+                newUserWorkspace.getId(),
+                newUserWorkspace.getUser().getId(),
+                newUserWorkspace.getUser().getEmail(),
+                newUserWorkspace.getInvitationStatus(),
+                newUserWorkspace.getMemberRole()
+        );
+
+    }
+
 
 }
