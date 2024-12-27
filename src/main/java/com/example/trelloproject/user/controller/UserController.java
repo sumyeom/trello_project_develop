@@ -1,18 +1,13 @@
 package com.example.trelloproject.user.controller;
 
-import com.example.trelloproject.user.dto.UserLoginRequestDto;
-import com.example.trelloproject.user.dto.UserLoginResponseDto;
-import com.example.trelloproject.user.dto.UserSignUpRequestDto;
-import com.example.trelloproject.user.dto.UserSignUpResponseDto;
+import com.example.trelloproject.user.dto.*;
 import com.example.trelloproject.user.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -28,8 +23,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
-        UserLoginResponseDto userLoginResponseDto = userServiceImpl.loginUser(userLoginRequestDto);
+    public ResponseEntity<JwtAuthReponseDto> login(@RequestBody UserLoginRequestDto userLoginRequestDto) {
+        JwtAuthReponseDto userLoginResponseDto = userServiceImpl.loginUser(userLoginRequestDto);
         return new ResponseEntity<>(userLoginResponseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/auth-test")
+    public String authTest(Authentication authentication) {
+        return authentication.getPrincipal().toString();
     }
 }

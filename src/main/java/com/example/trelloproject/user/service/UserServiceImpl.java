@@ -1,12 +1,12 @@
 package com.example.trelloproject.user.service;
 
 import com.example.trelloproject.user.config.auth.UserDetailsImpl;
-import com.example.trelloproject.user.dto.UserLoginRequestDto;
-import com.example.trelloproject.user.dto.UserLoginResponseDto;
-import com.example.trelloproject.user.dto.UserSignUpRequestDto;
-import com.example.trelloproject.user.dto.UserSignUpResponseDto;
+import com.example.trelloproject.user.dto.*;
 import com.example.trelloproject.user.entity.User;
+import com.example.trelloproject.user.enumclass.UserRole;
 import com.example.trelloproject.user.repository.UserRepository;
+import com.example.trelloproject.user.util.AuthenticationScheme;
+import com.example.trelloproject.user.util.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DuplicateKeyException;
@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtProvider jwtProvider;
 
     @Transactional
     public UserSignUpResponseDto createUser(UserSignUpRequestDto userSignUpRequestDto) throws DuplicateKeyException {
@@ -42,14 +43,14 @@ public class UserServiceImpl implements UserService {
                 userSignUpRequestDto.getName(),
                 userSignUpRequestDto.getEmail(),
                 encodedPassword,
-                userSignUpRequestDto.getUserRole());
+                UserRole.of(userSignUpRequestDto.getUserRole()));
 
         userRepository.save(user);
 
         return new UserSignUpResponseDto(user.getName(), user.getEmail(), user.getUserRole());
     }
 
-    public UserLoginResponseDto loginUser(UserLoginRequestDto userLoginRequestDto) {
+    public JwtAuthReponseDto loginUser(UserLoginRequestDto userLoginRequestDto) {
 
         User user = userRepository.findByEmail(userLoginRequestDto.getEmail()).orElseThrow(() -> new UsernameNotFoundException("사용자가 존재하지 않습니다."));
         validatePassword(userLoginRequestDto.getPassword(), user.getPassword());
@@ -57,10 +58,12 @@ public class UserServiceImpl implements UserService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(userLoginRequestDto.getEmail(), userLoginRequestDto.getPassword())
         );
-
+        log.info("SecurityContext에 Authentication 저장.");
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new UserLoginResponseDto(user.getName(), user.getEmail());
+        String accessToken = jwtProvider.generateToken(authentication);
+        log.info("토큰 생성: {}", accessToken);
+        return new JwtAuthReponseDto(AuthenticationScheme.BEARER.getName(), accessToken);
     }
 
     //세션에서 로그인한 사용자의 정보 가져오기

@@ -21,6 +21,7 @@ public class UserDetailsImpl implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         UserRole userRole = user.getUserRole();
+        log.info("사용자 권한: {}", userRole.getAuthority());
 
         return new ArrayList<>(userRole.getAuthority());
     }

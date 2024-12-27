@@ -4,9 +4,6 @@ import com.example.trelloproject.user.enumclass.MemberRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Entity(name = "user_workspace")
 public class UserWorkspace {
@@ -20,8 +17,9 @@ public class UserWorkspace {
     @Column(nullable = false)
     private MemberRole memberRole;
 
-    @OneToMany(mappedBy = "userWorkspace")
-    private List<User> users = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User users;
 
     public UserWorkspace() {}
 
