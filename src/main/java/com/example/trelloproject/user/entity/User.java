@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity(name = "user")
 public class User {
@@ -29,9 +32,8 @@ public class User {
     @Column(nullable = false)
     private UserRole userRole;
 
-    @ManyToOne
-    @JoinColumn(name = "user_workspace_id")
-    private UserWorkspace userWorkspace;
+    @OneToMany(mappedBy = "user")
+    private List<UserWorkspace> userWorkspace = new ArrayList<>();
 
     public User() {}
 
