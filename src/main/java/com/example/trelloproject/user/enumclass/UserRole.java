@@ -26,6 +26,6 @@ public enum UserRole {
     }
 
     public List<SimpleGrantedAuthority> getAuthority() {
-        return List.of(new SimpleGrantedAuthority(name));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + name));
     }
 }
