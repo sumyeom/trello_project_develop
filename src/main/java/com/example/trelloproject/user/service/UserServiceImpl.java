@@ -3,6 +3,7 @@ package com.example.trelloproject.user.service;
 import com.example.trelloproject.user.config.auth.UserDetailsImpl;
 import com.example.trelloproject.user.dto.*;
 import com.example.trelloproject.user.entity.User;
+import com.example.trelloproject.user.enumclass.UserRole;
 import com.example.trelloproject.user.repository.UserRepository;
 import com.example.trelloproject.user.util.AuthenticationScheme;
 import com.example.trelloproject.user.util.JwtProvider;
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
                 userSignUpRequestDto.getName(),
                 userSignUpRequestDto.getEmail(),
                 encodedPassword,
-                userSignUpRequestDto.getUserRole());
+                UserRole.of(userSignUpRequestDto.getUserRole()));
 
         userRepository.save(user);
 
