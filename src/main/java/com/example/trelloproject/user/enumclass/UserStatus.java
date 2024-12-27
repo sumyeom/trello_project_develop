@@ -1,9 +1,6 @@
 package com.example.trelloproject.user.enumclass;
 
 import lombok.Getter;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import java.util.List;
 
 @Getter
 public enum UserStatus {
@@ -23,9 +20,5 @@ public enum UserStatus {
         }
 
         throw new IllegalArgumentException("해당 상태가 존재하지 않습니다." + name);
-    }
-
-    public List<SimpleGrantedAuthority> getAuthority() {
-        return List.of(new SimpleGrantedAuthority(name));
     }
 }
