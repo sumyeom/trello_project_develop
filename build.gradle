@@ -44,6 +44,10 @@ dependencies {
     compileOnly 'io.jsonwebtoken:jjwt-api:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+    // s3
+    implementation 'software.amazon.awssdk:s3:2.20.56'
+
 }
 
 tasks.named('test') {
