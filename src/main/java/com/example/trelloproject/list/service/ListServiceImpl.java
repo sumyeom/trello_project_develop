@@ -24,7 +24,7 @@ public class ListServiceImpl implements ListService{
     @Override
     public ListCreateResponseDto creatList(Long workspaceId, Long boardId, ListCreateRequestDto listCreateRequestDto) {
 
-        Board foundBoard = boardRepository.findById(boardId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "해당하는 보드가 존재하지 않습니다."));
+        Board foundBoard = findByBoardId(boardId);
 
         // 보드아이디로 속한 리스트 갯수 세기
         Integer listCount = listRepository.countByBoardId(boardId);
@@ -37,10 +37,10 @@ public class ListServiceImpl implements ListService{
     @Override
     public ListCreateResponseDto updateList(Long workspaceId, Long boardId, Long listId, ListUpdateRequestDto listUpdateRequestDto) {
 
-        Board foundBoard = boardRepository.findById(boardId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "해당하는 보드가 존재하지 않습니다."));
+        Board foundBoard = findByBoardId(boardId);
 
         // 순서를 바꿀 리스트
-        BoardList foundBoardList = listRepository.findById(listId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NO_CONTENT, "해당하는 리스트가 존재하지 않습니다."));
+        BoardList foundBoardList = findByListId(listId);
         // 보드아이디에 해당하는 리스트들의 집합
         List<BoardList> boardLists = listRepository.findByBoardId(boardId);
 
@@ -69,4 +69,26 @@ public class ListServiceImpl implements ListService{
         listRepository.save(foundBoardList);
         return ListCreateResponseDto.toDto(foundBoardList);
     }
+
+    @Override
+    public void deleteList(Long workspaceId, Long boardId, Long listId) {
+
+        BoardList foundBoardList = findByListId(listId);
+        listRepository.delete(foundBoardList);
+    }
+
+    public Board findByBoardId(Long Id) {
+
+        return boardRepository.findById(Id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NO_CONTENT, "해당하는 보드가 존재하지 않습니다."));
+
+    }
+
+    public BoardList findByListId(Long Id) {
+
+        return listRepository.findById(Id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NO_CONTENT, "해당하는 리스트가 존재하지 않습니다."));
+
+    }
+
 }
