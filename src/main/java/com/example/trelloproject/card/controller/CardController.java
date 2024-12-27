@@ -2,6 +2,7 @@ package com.example.trelloproject.card.controller;
 
 import com.example.trelloproject.card.dto.cardCreate.CardCreateRequestDto;
 import com.example.trelloproject.card.dto.cardCreate.CardCreateResponseDto;
+import com.example.trelloproject.card.dto.cardFind.CardFindResponseDto;
 import com.example.trelloproject.card.dto.cardUpdate.CardUpdateRequestDto;
 import com.example.trelloproject.card.dto.cardUpdate.CardUpdateResponseDto;
 import com.example.trelloproject.card.service.CardService;
@@ -9,8 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @RestController
-@RequestMapping("/workspaces/{workspaceId}/boards/{boardId}/lists/{listId}/cards")
+@RequestMapping
 public class CardController {
 
     public final CardService cardService;
@@ -20,13 +24,16 @@ public class CardController {
     }
 
     // 카드 생성
-    @PostMapping
-    public ResponseEntity<CardCreateResponseDto> createCard(@RequestBody CardCreateRequestDto cardCreateRequestDto) {
-        return new ResponseEntity<>(cardService.createCard(cardCreateRequestDto), HttpStatus.CREATED);
+    @PostMapping("/lists/{listId}/cards")
+    public ResponseEntity<CardCreateResponseDto> createCard(
+            @PathVariable Long listId,
+            @RequestBody CardCreateRequestDto cardCreateRequestDto
+    ) {
+        return new ResponseEntity<>(cardService.createCard(listId, cardCreateRequestDto), HttpStatus.CREATED);
     }
 
     // 카드 수정
-    @PatchMapping
+    @PatchMapping("/cards/{cardId}")
     public ResponseEntity<CardUpdateResponseDto> updateCard(
             @PathVariable Long cardId,
             @RequestBody CardUpdateRequestDto cardUpdateRequestDto
@@ -34,11 +41,30 @@ public class CardController {
         return new ResponseEntity<>(cardService.updateCard(cardId, cardUpdateRequestDto),HttpStatus.OK);
     }
 
-
     // 카드 단건 조회
-
+    @GetMapping("/cards/{cardId}")
+    public ResponseEntity<CardFindResponseDto> findCard(
+            @PathVariable Long cardId
+    ) {
+        return new ResponseEntity<>(cardService.getCard(cardId), HttpStatus.OK);
+    }
 
     // 카드 삭제
+    @DeleteMapping("/cards/{cardId}")
+    public ResponseEntity<Void> deleteCard(
+
+            @PathVariable Long cardId
+    ){
+        cardService.deleteCard(cardId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    //카드 검색
+    @GetMapping("/cards")
+    public ResponseEntity<List<CardFindResponseDto>> searchCards(String title, String description, LocalDateTime endAt, String name){
+        List<CardFindResponseDto> findCards = cardService.searchAndConvertCard(title, description, endAt, name);
+        return new ResponseEntity<>(findCards, HttpStatus.OK);
+    }
 
 
 
