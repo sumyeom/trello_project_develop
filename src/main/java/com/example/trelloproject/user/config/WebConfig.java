@@ -42,8 +42,6 @@ public class WebConfig {
                         .dispatcherTypeMatchers(DispatcherType.FORWARD, DispatcherType.INCLUDE, DispatcherType.ERROR).permitAll()
                         // ADMIN 전용 기능
                         .requestMatchers(HttpMethod.POST,"/workspaces").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH,"/workspaces/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE,"/workspaces/**").hasRole("ADMIN")
                         // 인증된 사용자 공통
                         .requestMatchers("/workspaces/**").authenticated()
                         .anyRequest().authenticated())
