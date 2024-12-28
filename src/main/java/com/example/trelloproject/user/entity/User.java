@@ -32,7 +32,7 @@ public class User {
     @Column(nullable = false)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserWorkspace> userWorkspace = new ArrayList<>();
 
     public User() {}

@@ -26,7 +26,7 @@ public class UserWorkspaceServiceImpl implements UserWorkspaceService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow(() -> new RuntimeException("Workspace not found"));
 
-        UserWorkspace userWorkspace = new UserWorkspace(user, workspace, invitationStatus, memberRole);
+        UserWorkspace userWorkspace = new UserWorkspace(invitationStatus, memberRole, user, workspace);
         userWorkspaceRepository.save(userWorkspace);
     }
 }

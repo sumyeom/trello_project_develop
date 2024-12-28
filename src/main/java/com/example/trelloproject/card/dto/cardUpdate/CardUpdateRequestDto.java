@@ -14,13 +14,13 @@ public class CardUpdateRequestDto {
     private String newDescription;
     private LocalDateTime newEndAt;
     private List<AddFile> newFileList;
-    private List<UserCard> newMemberList;
+    private List<UserCard> newManagers;
 
-    public CardUpdateRequestDto(String newTitle, String newDescription, LocalDateTime newEndAt, List<AddFile> newFileList, List<UserCard> newMemberList) {
+    public CardUpdateRequestDto(String newTitle, String newDescription, LocalDateTime newEndAt, List<AddFile> newFileList, List<UserCard> newManagers) {
         this.newTitle = newTitle;
         this.newDescription = newDescription;
         this.newEndAt = newEndAt;
         this.newFileList = newFileList;
-        this.newMemberList = newMemberList;
+        this.newManagers = newManagers;
     }
 }

@@ -2,11 +2,12 @@ package com.example.trelloproject.card.dto.cardUpdate;
 
 import com.example.trelloproject.card.entity.AddFile;
 import com.example.trelloproject.card.entity.UserCard;
-import com.example.trelloproject.user.entity.User;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
 public class CardUpdateResponseDto {
 
     private Long id;

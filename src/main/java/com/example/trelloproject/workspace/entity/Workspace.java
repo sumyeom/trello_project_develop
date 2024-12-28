@@ -1,12 +1,9 @@
 package com.example.trelloproject.workspace.entity;
 
 import com.example.trelloproject.common.entity.CreateAndUpdateDateEntity;
-import com.example.trelloproject.user.entity.UserWorkspace;
+import com.example.trelloproject.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -23,12 +20,14 @@ public class Workspace extends CreateAndUpdateDateEntity {
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "workspace")
-    private List<UserWorkspace> userWorkspace = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public Workspace(String name, String description) {
+    public Workspace(String name, String description,User user) {
         this.name = name;
         this.description = description;
+        this.user = user;
     }
 
     public Workspace() {

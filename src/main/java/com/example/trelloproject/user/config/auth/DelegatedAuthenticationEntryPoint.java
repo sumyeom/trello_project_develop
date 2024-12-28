@@ -20,5 +20,10 @@ public class DelegatedAuthenticationEntryPoint implements AuthenticationEntryPoi
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
         resolver.resolveException(request, response, null, authException);
+
+        // 상태 코드 명시적으로 설정
+        if (!response.isCommitted()) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // Unauthorized: 401
+        }
     }
 }

@@ -2,16 +2,19 @@ package com.example.trelloproject.workspace.service;
 
 import com.example.trelloproject.user.config.auth.UserDetailsImpl;
 import com.example.trelloproject.user.entity.User;
+import com.example.trelloproject.user.entity.UserWorkspace;
+import com.example.trelloproject.user.repository.UserRepository;
+import com.example.trelloproject.workspace.dto.*;
 import com.example.trelloproject.user.enumclass.MemberRole;
 import com.example.trelloproject.workspace.dto.WorkspaceRequestDto;
 import com.example.trelloproject.workspace.dto.WorkspaceFindResponseDto;
 import com.example.trelloproject.workspace.dto.WorkspaceResponseDto;
 import com.example.trelloproject.workspace.entity.Workspace;
+import com.example.trelloproject.workspace.repository.UserWorkspaceRepository;
 import com.example.trelloproject.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,24 +26,33 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
+    private final UserRepository userRepository;
+    private final UserWorkspaceRepository userWorkspaceRepository;
     // 추가 사항
     private final UserWorkspaceService userWorkspaceService;
 
+    /**
+     * 워크스페이스 생성
+     * @param authentication
+     * @param requestDto
+     * @return
+     */
     @Transactional
     @Override
-    public WorkspaceResponseDto createWorkspace(WorkspaceRequestDto requestDto) {
-        //TODO: 유저 멤버 역할 확인 필요
-        Workspace workspace = new Workspace(requestDto.getName(), requestDto.getDescription());
+    public WorkspaceResponseDto createWorkspace(Authentication authentication, WorkspaceRequestDto requestDto) {
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User findUser = userDetails.getUser();
+
+        Workspace workspace = new Workspace(requestDto.getName(), requestDto.getDescription(),findUser);
         Workspace newWorkspace = workspaceRepository.save(workspace);
 
         // 추가 사항
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        User user = userDetails.getUser();
-        userWorkspaceService.createUserWorkspace(user.getId(), workspace.getWorkspaceId(), "temp", MemberRole.WSADMIN);
+        userWorkspaceService.createUserWorkspace(findUser.getId(), workspace.getWorkspaceId(), "temp", MemberRole.WSADMIN);
 
         return new WorkspaceResponseDto(
                 newWorkspace.getWorkspaceId(),
+                newWorkspace.getUser().getId(),
                 newWorkspace.getName(),
                 newWorkspace.getDescription(),
                 newWorkspace.getCreatedAt(),
@@ -81,6 +93,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         Workspace updateWorkspace = workspaceRepository.save(findWorkspace);
         return new WorkspaceResponseDto(
                 updateWorkspace.getWorkspaceId(),
+                updateWorkspace.getUser().getId(),
                 updateWorkspace.getName(),
                 updateWorkspace.getDescription(),
                 updateWorkspace.getCreatedAt(),
@@ -96,6 +109,75 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public void deleteWorkspace(Long id) {
 
         workspaceRepository.deleteById(id);
+    }
+
+    /**
+     * 워크스페이스 초대 및 권한 설정
+     * @param authentication
+     * @param workspaceId
+     * @param requestDto
+     * @return
+     */
+    @Transactional
+    @Override
+    public WorkspaceInviteResponseDto inviteWorkspace(Authentication authentication, Long workspaceId, WorkspaceInviteRequestDto requestDto) {
+        // 워크 스페이스 찾음
+        Workspace findWorkspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"워크스페이스를 찾을 수 없습니다."));
+
+        // 초대할 유저 조회
+        User findUser = userRepository.findByEmail(requestDto.getEmail())
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"사용자를 찾을 수 없습니다."));
+
+        UserWorkspace newWorkspace = new UserWorkspace("INVITE", requestDto.getMemberRole(),findUser,findWorkspace);
+        UserWorkspace newUserWorkspace = userWorkspaceRepository.save(newWorkspace);
+
+        return new WorkspaceInviteResponseDto(
+                newUserWorkspace.getId(),
+                newUserWorkspace.getUser().getId(),
+                newUserWorkspace.getUser().getEmail(),
+                newUserWorkspace.getInvitationStatus(),
+                newUserWorkspace.getMemberRole()
+        );
+    }
+
+    /**
+     * 워크스페이스 초대 응답
+     * @param workspaceId
+     * @param id
+     * @param authentication
+     * @param requestDto
+     * @return
+     */
+    @Transactional
+    @Override
+    public WorkspaceInviteResponseDto inviteAcceptWorkspace(Long workspaceId, Long id, Authentication authentication, WorkspaceInviteAcceptRequestDto requestDto) {
+        // Workspace 조회
+        Workspace findWorkspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"해당 워크스페이스가 없습니다."));
+        // UserWorkspace 조회
+        UserWorkspace findUserWorkspace = userWorkspaceRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"초대된 워크스페이스가 없습니다."));
+        // 유저 조회
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User findUser = userDetails.getUser();
+
+        // userWorkspace에 있는 유저와 로그인한 유저가 다를 경우
+        if(!findUser.getId().equals(findUserWorkspace.getUser().getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
+        findUserWorkspace.updateStatus(requestDto.getStatus());
+        UserWorkspace newUserWorkspace = userWorkspaceRepository.save(findUserWorkspace);
+
+        return new WorkspaceInviteResponseDto(
+                newUserWorkspace.getId(),
+                newUserWorkspace.getUser().getId(),
+                newUserWorkspace.getUser().getEmail(),
+                newUserWorkspace.getInvitationStatus(),
+                newUserWorkspace.getMemberRole()
+        );
+
     }
 
 

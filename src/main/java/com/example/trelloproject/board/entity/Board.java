@@ -1,5 +1,6 @@
 package com.example.trelloproject.board.entity;
 
+import com.example.trelloproject.S3.Image;
 import com.example.trelloproject.board.dto.BoardCreateRequestDto;
 import com.example.trelloproject.common.entity.CreateAndUpdateDateEntity;
 import com.example.trelloproject.list.entity.BoardList;
@@ -16,7 +17,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +32,8 @@ public class Board extends CreateAndUpdateDateEntity {
     @Column(nullable = false)
     private String title;
 
-//    @Column(nullable = false)
-    @Column
-    private File image;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Image> images = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "workspace_id", nullable = false)
@@ -45,14 +44,23 @@ public class Board extends CreateAndUpdateDateEntity {
 
     public Board() {}
 
-    public Board(String title, File image, Workspace workspace) {
+    public Board(String title,  Workspace workspace) {
         this.title = title;
-        this.image = image;
         this.workspace = workspace;
     }
 
     public void updateBoard(BoardCreateRequestDto boardCreateRequestDto) {
         this.title = boardCreateRequestDto.getTitle();
-        this.image = boardCreateRequestDto.getImage();
+    }
+
+    public void addImage(Image image) {
+        images.add(image);
+        image.associateWithBoard(this);
+    }
+
+    public void clearImages() {
+        if (images != null) {
+            images.clear();
+        }
     }
 }

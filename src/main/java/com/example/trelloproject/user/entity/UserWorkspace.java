@@ -16,11 +16,13 @@ public class UserWorkspace {
     private String invitationStatus;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private MemberRole memberRole;
 
+    // 초대 당한 사람
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User users;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "workspace_id")
@@ -28,10 +30,14 @@ public class UserWorkspace {
 
     public UserWorkspace() {}
 
-    public UserWorkspace(User user, Workspace workspace, String invitationStatus, MemberRole memberRole) {
-        this.users = user;
-        this.workspace = workspace;
+    public UserWorkspace(String invitationStatus, MemberRole memberRole, User user, Workspace workspace) {
         this.invitationStatus = invitationStatus;
         this.memberRole = memberRole;
+        this.user = user;
+        this.workspace = workspace;
+    }
+
+    public void updateStatus(String status){
+        this.invitationStatus = status;
     }
 }

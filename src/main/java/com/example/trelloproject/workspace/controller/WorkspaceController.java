@@ -1,12 +1,11 @@
 package com.example.trelloproject.workspace.controller;
 
-import com.example.trelloproject.workspace.dto.WorkspaceRequestDto;
-import com.example.trelloproject.workspace.dto.WorkspaceFindResponseDto;
-import com.example.trelloproject.workspace.dto.WorkspaceResponseDto;
+import com.example.trelloproject.workspace.dto.*;
 import com.example.trelloproject.workspace.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,9 +23,10 @@ public class WorkspaceController {
      */
     @PostMapping
     public ResponseEntity<WorkspaceResponseDto> createWorkspace(
-            @RequestBody WorkspaceRequestDto requestDto
+            @RequestBody WorkspaceRequestDto requestDto,
+            Authentication authentication
     ){
-        WorkspaceResponseDto responseDto = workspaceService.createWorkspace(requestDto);
+        WorkspaceResponseDto responseDto = workspaceService.createWorkspace(authentication,requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
@@ -67,4 +67,41 @@ public class WorkspaceController {
         workspaceService.deleteWorkspace(id);
         return new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
+
+    /**
+     * 워크스페이스 초대 및 권한 설정 API
+     * @param workspaceId
+     * @param requestDto
+     * @param authentication
+     * @return
+     */
+    @PostMapping("/{workspaceId}/invitation")
+    public ResponseEntity<WorkspaceInviteResponseDto> inviteWorkspace(
+            @PathVariable Long workspaceId,
+            @RequestBody WorkspaceInviteRequestDto requestDto,
+            Authentication authentication
+    ){
+        WorkspaceInviteResponseDto responseDto = workspaceService.inviteWorkspace(authentication,workspaceId, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    }
+
+    /**
+     * 워크스페이스 초대 응답 API
+     * @param workspaceId
+     * @param id
+     * @param requestDto
+     * @param authentication
+     * @return
+     */
+    @PatchMapping("/{workspaceId}/invitation/{id}")
+    public ResponseEntity<WorkspaceInviteResponseDto> inviteAcceptWorkspace(
+            @PathVariable Long workspaceId,
+            @PathVariable Long id,
+            @RequestBody WorkspaceInviteAcceptRequestDto requestDto,
+            Authentication authentication
+    ){
+        WorkspaceInviteResponseDto responseDto = workspaceService.inviteAcceptWorkspace(workspaceId, id, authentication, requestDto);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
 }
