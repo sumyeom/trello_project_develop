@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
 
+    @Override
     @Transactional
     public UserSignUpResponseDto createUser(UserSignUpRequestDto userSignUpRequestDto) throws DuplicateKeyException {
 
@@ -50,6 +51,7 @@ public class UserServiceImpl implements UserService {
         return new UserSignUpResponseDto(user.getName(), user.getEmail(), user.getUserRole());
     }
 
+    @Override
     public JwtAuthReponseDto loginUser(UserLoginRequestDto userLoginRequestDto) {
 
         User user = userRepository.findByEmail(userLoginRequestDto.getEmail()).orElseThrow(() -> new UsernameNotFoundException("사용자가 존재하지 않습니다."));
