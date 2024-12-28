@@ -11,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
                 : HttpStatus.UNAUTHORIZED;
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "access denied");
+        response.put("message", e.getMessage());
 
         return ResponseEntity.status(statusCode).body(response);
     }
@@ -47,7 +48,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<Map<String, String>> handleAccessDeniedException(AccessDeniedException e) {
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "access denied");
+        response.put("message", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
@@ -56,7 +57,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<Map<String, String>> handleAuthorizationDeniedException(AuthorizationDeniedException e) {
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "access denied");
+        response.put("message", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
@@ -68,8 +69,27 @@ public class GlobalExceptionHandler {
                 : HttpStatus.FORBIDDEN;
 
         Map<String, String> response = new HashMap<>();
-        response.put("message", "access denied");
+        response.put("message", e.getMessage());
 
         return ResponseEntity.status(httpStatus).body(response);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Map<String, String>> handleResponseStatusExceptions(ResponseStatusException e) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error code", e.getStatusCode().toString());
+        response.put("message", e.getMessage());
+        return ResponseEntity.status(e.getStatusCode()).body(response);
+    }
+
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<Map<String, String>> handleGlobalException(Exception e) {
+        log.error("Unhandled exception: {}", e.getMessage(), e);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "An unexpected error occurred");
+        response.put("error", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
