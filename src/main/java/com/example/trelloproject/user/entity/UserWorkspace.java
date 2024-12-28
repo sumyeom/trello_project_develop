@@ -1,6 +1,7 @@
 package com.example.trelloproject.user.entity;
 
 import com.example.trelloproject.user.enumclass.MemberRole;
+import com.example.trelloproject.workspace.entity.Workspace;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -21,9 +22,15 @@ public class UserWorkspace {
     @JoinColumn(name = "user_id")
     private User users;
 
+    @ManyToOne
+    @JoinColumn(name = "workspace_id")
+    private Workspace workspace;
+
     public UserWorkspace() {}
 
-    public UserWorkspace(String invitationStatus, MemberRole memberRole) {
+    public UserWorkspace(User user, Workspace workspace, String invitationStatus, MemberRole memberRole) {
+        this.users = user;
+        this.workspace = workspace;
         this.invitationStatus = invitationStatus;
         this.memberRole = memberRole;
     }
