@@ -21,7 +21,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class AnyAuthInterceptor implements HandlerInterceptor {
+public class MemberAuthInterceptor implements HandlerInterceptor {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
@@ -40,17 +40,18 @@ public class AnyAuthInterceptor implements HandlerInterceptor {
 
         if (jwtProvider.validateToken(token)) {
             String username = jwtProvider.getUsername(token);
+
+            // memberRole이 null값일 때
             User user = userRepository.findByEmail(username).orElseThrow(() -> new ForbiddenException("접근 권한이 없습니다."));
             Long workspaceId = PathVariableExtractor.extractPathVariable(request, "workspaceId");
 
             List<UserWorkspace> userWorkspace = user.getUserWorkspace().stream().filter(uw -> uw.getWorkspace().getWorkspaceId().equals(workspaceId)).toList();
             MemberRole memberRole = userWorkspace.get(0).getMemberRole();
 
-            switch (request.getMethod()) {
-                case "POST", "PATCH", "DELETE" -> {return !memberRole.equals(MemberRole.ONLYREAD);}
-                case "GET" -> {return true;}
+            if (memberRole.equals(MemberRole.MEMBER)) {
+                return true;
             }
-            return false;
+            throw new ForbiddenException("접근 권한이 없습니다.");
 
         } else {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
