@@ -5,13 +5,16 @@ import com.example.trelloproject.user.entity.User;
 import com.example.trelloproject.user.entity.UserWorkspace;
 import com.example.trelloproject.user.repository.UserRepository;
 import com.example.trelloproject.workspace.dto.*;
+import com.example.trelloproject.user.enumclass.MemberRole;
+import com.example.trelloproject.workspace.dto.WorkspaceRequestDto;
+import com.example.trelloproject.workspace.dto.WorkspaceFindResponseDto;
+import com.example.trelloproject.workspace.dto.WorkspaceResponseDto;
 import com.example.trelloproject.workspace.entity.Workspace;
 import com.example.trelloproject.workspace.repository.UserWorkspaceRepository;
 import com.example.trelloproject.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,6 +28,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final UserRepository userRepository;
     private final UserWorkspaceRepository userWorkspaceRepository;
+    // 추가 사항
+    private final UserWorkspaceService userWorkspaceService;
 
     /**
      * 워크스페이스 생성
@@ -41,6 +46,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         Workspace workspace = new Workspace(requestDto.getName(), requestDto.getDescription(),findUser);
         Workspace newWorkspace = workspaceRepository.save(workspace);
+
+        // 추가 사항
+        userWorkspaceService.createUserWorkspace(findUser.getId(), workspace.getWorkspaceId(), "temp", MemberRole.WSADMIN);
 
         return new WorkspaceResponseDto(
                 newWorkspace.getWorkspaceId(),
