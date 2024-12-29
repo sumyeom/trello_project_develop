@@ -12,8 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.nio.file.AccessDeniedException;
+import org.springframework.security.access.AccessDeniedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class GlobalExceptionHandler {
         Map<String, String> response = new HashMap<>();
         response.put("message", e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
