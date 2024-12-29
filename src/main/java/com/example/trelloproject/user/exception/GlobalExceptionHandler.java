@@ -81,6 +81,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getStatusCode()).body(response);
     }
 
+    //인터셉터에서 발생한 권한관련 접근금지 예외처리
+    @ExceptionHandler(ForbiddenException.class)
+    protected ResponseEntity<Map<String, String>> handleForbiddenException(ForbiddenException e) {
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Map<String, String>> handleGlobalException(Exception e) {
         log.error("Unhandled exception: {}", e.getMessage(), e);
