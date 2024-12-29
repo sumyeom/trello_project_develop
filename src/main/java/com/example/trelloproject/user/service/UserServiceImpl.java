@@ -1,5 +1,6 @@
 package com.example.trelloproject.user.service;
 
+import com.example.trelloproject.notification.NotificationService;
 import com.example.trelloproject.user.config.auth.UserDetailsImpl;
 import com.example.trelloproject.user.dto.*;
 import com.example.trelloproject.user.entity.User;
@@ -29,6 +30,8 @@ public class UserServiceImpl implements UserService {
     private final AuthenticationManager authenticationManager;
     private final JwtProvider jwtProvider;
 
+    private final NotificationService notificationService;
+
     //회원가입
     @Override
     @Transactional
@@ -48,6 +51,8 @@ public class UserServiceImpl implements UserService {
                 UserRole.of(userSignUpRequestDto.getUserRole()));
 
         userRepository.save(user);
+
+        notificationService.sendMessageToSlack("회원가입 성공");
 
         return new UserSignUpResponseDto(user.getName(), user.getEmail(), user.getUserRole());
     }
@@ -71,6 +76,10 @@ public class UserServiceImpl implements UserService {
 
         String accessToken = jwtProvider.generateToken(authentication);
         log.info("토큰 생성: {}", accessToken);
+
+        // 알람 메시지
+        notificationService.sendMessageToSlack("로그인 성공");
+
         return new UserLoginResponseDto("로그인 성공", user.getName(), user.getEmail(), accessToken);
     }
 
