@@ -44,5 +44,9 @@ public class User {
         this.userRole = userRole;
         this.userStatus = UserStatus.NORMAL;
     }
+
+    public void updateUserStatus() {
+        this.userStatus = UserStatus.DELETED;
+    }
 }
 
