@@ -32,7 +32,7 @@ public class CardRepositoryImpl implements CardCustomRepository {
 
         return jpaQueryFactory
                 .selectFrom(card)
-                .join(card.managers, manager).fetchJoin()
+                .leftJoin(card.managers, manager).fetchJoin()
                 .join(card.boardList, boardList).fetchJoin()
                 .where(
                         titleEq(title),
