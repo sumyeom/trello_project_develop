@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/workspaces/{workspaceId}")
 public class CardController {
 
-    public final CardService cardService;
+    private final CardService cardService;
 
     public CardController(CardService cardService) {
         this.cardService = cardService;
@@ -61,14 +61,14 @@ public class CardController {
 
     //카드 검색
     @GetMapping("/cards")
-    public ResponseEntity<List<CardFindResponseDto>> searchCards(String title, String description, LocalDateTime endAt, String name){
-        List<CardFindResponseDto> findCards = cardService.searchAndConvertCard(title, description, endAt, name);
+    public ResponseEntity<List<CardFindResponseDto>> searchCards(
+            @RequestParam (required = false)String title,
+            @RequestParam (required = false)String description,
+            @RequestParam (required = false)LocalDateTime endAt,
+            @RequestParam (required = false)String userName,
+            @RequestParam (required = false)Long boardId){
+        List<CardFindResponseDto> findCards = cardService.searchAndConvertCard(title, description, endAt, userName, boardId);
         return new ResponseEntity<>(findCards, HttpStatus.OK);
     }
-
-
-
-
-
 
 }

@@ -1,7 +1,6 @@
 package com.example.trelloproject.card.repository;
 
 import com.example.trelloproject.card.entity.Card;
-import com.example.trelloproject.user.entity.User;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
