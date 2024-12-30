@@ -48,7 +48,7 @@ public class OnlyreadAuthInterceptor implements HandlerInterceptor {
             List<UserWorkspace> userWorkspace = user.getUserWorkspace().stream().filter(uw -> uw.getWorkspace().getWorkspaceId().equals(workspaceId)).toList();
             MemberRole memberRole = userWorkspace.get(0).getMemberRole();
 
-            if (memberRole.equals(MemberRole.ONLYREAD)) {
+            if (memberRole.equals(MemberRole.MEMBER) || memberRole.equals(MemberRole.WSADMIN) || memberRole.equals(MemberRole.ONLYREAD)) {
                 return true;
             }
             throw new ForbiddenException("접근 권한이 없습니다.");
