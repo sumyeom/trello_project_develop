@@ -32,19 +32,8 @@ public class BoardServiceImpl implements BoardService {
 
         Board board = new Board(boardCreateRequestDto.getTitle(), foundWorkspace);
 
-        // 이미지 처리
-        MultipartFile image = boardCreateRequestDto.getImage();
-        if (image != null) {
-            try {
-                String filePath = s3Service.upload(image);
-                String fileName = image.getOriginalFilename();
-
-                Image imageEntity = Image.of(filePath, fileName);
-                board.addImage(imageEntity);
-            } catch (Exception e) {
-                throw new RuntimeException("이미지 업로드 중 오류 발생: " + e.getMessage(), e);
-            }
-        }
+        // 이미지 처리 함수 호출
+        createImage(board, boardCreateRequestDto);
 
         Board savedBoard = boardRepository.save(board);
 
@@ -73,6 +62,20 @@ public class BoardServiceImpl implements BoardService {
     public BoardCreateResponseDto updateBoard(Long workspaceId, Long boardId, BoardCreateRequestDto boardCreateRequestDto) {
 
         Board foundBoard = findByBoardId(boardId);
+
+        // 기존 이미지 삭제 (필요한 경우)
+        if (foundBoard.getImages() != null && !foundBoard.getImages().isEmpty()) {
+            for (Image image : foundBoard.getImages()) {
+                s3Service.delete(image.getFilePath());
+            }
+
+            foundBoard.clearImages();
+        }
+
+        // 새 이미지 처리 함수 호출
+        createImage(foundBoard, boardCreateRequestDto);
+
+        // Board 업데이트
         foundBoard.updateBoard(boardCreateRequestDto);
         Board savedBoard = boardRepository.save(foundBoard);
 
@@ -84,6 +87,23 @@ public class BoardServiceImpl implements BoardService {
 
         Board foundBoard = findByBoardId(boardId);
         boardRepository.delete(foundBoard);
+    }
+
+    // 이미지 처리 메서드
+    public void createImage(Board board, BoardCreateRequestDto boardCreateRequestDto) {
+
+        MultipartFile image = boardCreateRequestDto.getImage();
+        if (image != null) {
+            try {
+                String filePath = s3Service.upload(image);
+                String fileName = image.getOriginalFilename();
+
+                Image imageEntity = Image.of(filePath, fileName);
+                board.addImage(imageEntity);
+            } catch (Exception e) {
+                throw new RuntimeException("이미지 업로드 중 오류 발생: " + e.getMessage(), e);
+            }
+        }
     }
 
     public Workspace findByWorkspaceId(Long id) {

@@ -58,4 +58,10 @@ public class Board extends CreateAndUpdateDateEntity {
         images.add(image);
         image.associateWithBoard(this);
     }
+
+    public void clearImages() {
+        if (images != null) {
+            images.clear();
+        }
+    }
 }
