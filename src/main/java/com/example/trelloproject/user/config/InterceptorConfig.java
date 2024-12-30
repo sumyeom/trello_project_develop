@@ -13,7 +13,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     private static final String[] WSADMIN_ROLE_REQUIRED_PATH_PATTERNS = {"/workspaces/*/invitation"};
     private static final String[] MEMBER_ROLE_REQUIRED_PATH_PATTERNS = {"/workspaces/*/invitation"};
-    private static final String[] ONLYREAD_ROLE_REQUIRED_PATH_PATTERNS = {""};
+    private static final String[] ONLYREAD_ROLE_REQUIRED_PATH_PATTERNS = {"/workspaces/**"};
 
     private final WsadminAuthInterceptor wsadminAuthInterceptor;
     private final MemberAuthInterceptor memberAuthInterceptor;
