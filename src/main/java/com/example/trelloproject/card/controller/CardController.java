@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/workspaces/{workspaceId}")
 public class CardController {
 
     private final CardService cardService;
