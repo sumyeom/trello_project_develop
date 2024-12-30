@@ -3,6 +3,7 @@ package com.example.trelloproject.card.service;
 import com.example.trelloproject.card.dto.cardCreate.CardCreateRequestDto;
 import com.example.trelloproject.card.dto.cardCreate.CardCreateResponseDto;
 import com.example.trelloproject.card.dto.cardFind.CardFindResponseDto;
+import com.example.trelloproject.card.dto.cardFind.CardSearchResponseDto;
 import com.example.trelloproject.card.dto.cardUpdate.CardUpdateRequestDto;
 import com.example.trelloproject.card.dto.cardUpdate.CardUpdateResponseDto;
 import com.example.trelloproject.card.entity.Card;
@@ -97,14 +98,14 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
-    public List<CardFindResponseDto> searchAndConvertCard(String title, String description, LocalDateTime endAt, String name, Long boardId) {
-        List<Card> cards = searchCard(title, description, endAt, name) ;
+    public List<CardSearchResponseDto> searchAndConvertCard(String title, String description, LocalDateTime endAt, String name, Long boardId) {
+        List<Card> cards = searchCard(title, description, endAt, name, boardId) ;
         return converToDto(cards);
     }
 
-    private List<CardFindResponseDto> converToDto(List<Card> cards) {
+    private List<CardSearchResponseDto> converToDto(List<Card> cards) {
         return cards.stream()
-                .map(card -> new CardFindResponseDto(
+                .map(card -> new CardSearchResponseDto(
                         card.getId(),
                         card.getTitle()
                 ))
@@ -113,8 +114,8 @@ public class CardServiceImpl implements CardService {
 
 
     @Override
-    public List<Card> searchCard(String title, String description, LocalDateTime endAt, String name) {
-        return cardRepository.searchCard(title, description, endAt, name);
+    public List<Card> searchCard(String title, String description, LocalDateTime endAt, String name, Long boardId) {
+        return cardRepository.searchCard(title, description, endAt, name, boardId);
     }
 
 }
