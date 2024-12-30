@@ -18,7 +18,5 @@ public class CardUpdateRequestDto {
         this.newTitle = newTitle;
         this.newDescription = newDescription;
         this.newEndAt = newEndAt;
-        this.newFileList = newFileList;
-        this.newManagers = newManagers;
     }
 }

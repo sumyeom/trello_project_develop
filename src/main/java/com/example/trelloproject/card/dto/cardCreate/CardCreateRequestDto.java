@@ -19,7 +19,5 @@ public class CardCreateRequestDto {
         this.description = description;
         this.title = title;
         this.endAt = endAt;
-        this.fileList = fileList;
-        this.managers = managers;
     }
 }

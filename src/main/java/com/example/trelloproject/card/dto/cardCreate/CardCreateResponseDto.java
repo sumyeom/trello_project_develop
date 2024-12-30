@@ -21,8 +21,6 @@ public class CardCreateResponseDto {
         this.title = title;
         this.description = description;
         this.endAt = endAt;
-        this.fileList = fileList;
-        this.managers = managers;
     }
 
 }
