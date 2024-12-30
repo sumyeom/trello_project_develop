@@ -40,7 +40,6 @@ public class CardServiceImpl implements CardService {
                 ()->new ResponseStatusException(HttpStatus.NOT_FOUND)
         );
 
-
         Card savedCard = cardRepository.save(new Card(
                 cardCreateRequestDto.getTitle(),
                 cardCreateRequestDto.getDescription(),
