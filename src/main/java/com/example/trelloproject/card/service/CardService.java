@@ -20,7 +20,7 @@ public interface CardService {
 
     void deleteCard(Long cardId);
 
-    List<CardFindResponseDto> searchAndConvertCard(String title, String description, LocalDateTime endAt, String name);
+    List<CardFindResponseDto> searchAndConvertCard(String title, String description, LocalDateTime endAt, String name, Long boardId);
 
     List<Card> searchCard(String title, String description, LocalDateTime endAt, String name);
 }
