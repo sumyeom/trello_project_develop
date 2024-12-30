@@ -51,9 +51,8 @@ public class CardServiceImpl implements CardService {
         return new CardCreateResponseDto(savedCard.getId(),
                 savedCard.getTitle(),
                 savedCard.getDescription(),
-                savedCard.getEndAt(),
-                savedCard.getFileList(),
-                savedCard.getManagers()
+                savedCard.getEndAt()
+
         );
     }
 
@@ -66,11 +65,9 @@ public class CardServiceImpl implements CardService {
         findCard.setTitle(cardUpdateRequestDto.getNewTitle());
         findCard.setDescription(cardUpdateRequestDto.getNewDescription());
         findCard.setEndAt(cardUpdateRequestDto.getNewEndAt());
-        findCard.setFileList(cardUpdateRequestDto.getNewFileList());
-        findCard.setManagerList(cardUpdateRequestDto.getNewManagers());
 
         Card updatedCard = cardRepository.save(findCard);
-        return new CardUpdateResponseDto(updatedCard.getId(), updatedCard.getTitle(), updatedCard.getDescription(), updatedCard.getEndAt(), updatedCard.getFileList(), updatedCard.getManagers());
+        return new CardUpdateResponseDto(updatedCard.getId(), updatedCard.getTitle(), updatedCard.getDescription(), updatedCard.getEndAt());
     }
 
     @Override

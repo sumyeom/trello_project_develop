@@ -1,7 +1,10 @@
 package com.example.trelloproject.card.repository;
 
 
+import com.example.trelloproject.board.entity.QBoard;
 import com.example.trelloproject.card.entity.Card;
+import com.example.trelloproject.card.entity.QCard;
+import com.example.trelloproject.user.entity.QUser;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
